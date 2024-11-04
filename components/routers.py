@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema, \
-    PictureCreateSchema, PictureSchema, FileSchema
+    PictureCreateSchema, PictureSchema, FileSchema, MyAccountUpdateSchema
 from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, AccountRole
 
 status_router = APIRouter(prefix="/status", tags=["Статус"])
@@ -37,7 +37,7 @@ def get_my_account() -> AccountSchema:
 
 
 @accounts_router.put('/my', summary="Обновление данных своего аккаунта", tags=["Аккаунты"])
-def update_my_account(body: AccountUpdateSchema) -> AccountSchema:
+def update_my_account(body: MyAccountUpdateSchema) -> AccountSchema:
     return AccountSchema(
         id=1,
         login=body.login,
