@@ -46,3 +46,7 @@ class AccountCreateSchema(BaseModel):
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
 
+class PictureCreateSchema(BaseModel):
+    file_uuid: str
+
+

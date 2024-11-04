@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 
-from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema
+from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema, \
+    PictureCreateSchema
 from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, Role
 
 status_router = APIRouter(prefix="/status", tags=["Статус"])
@@ -66,6 +67,11 @@ def create_account(body: AccountCreateSchema) -> AccountSchema:
 
 @accounts_router.get('', summary="Получить список всех аккаунтов", tags=["Аккаунты"])
 def get_all_accounts() -> list[AccountSchema]:
+    pass
+
+
+@pictures_router.post("", summary="Создать новую картинку", tags=["Картинки"])
+def create_picture(body: PictureCreateSchema):
     pass
 
 
