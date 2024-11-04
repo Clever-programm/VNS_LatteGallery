@@ -18,6 +18,7 @@ class Role(StrEnum):
 class AccountSchema(BaseModel):
     id: int
     login: str
+    password: str
     name: str
     role: Role
 
@@ -38,5 +39,10 @@ class AccountPasswordUpdateSchema(BaseModel):
     password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
 
 
+class AccountCreateSchema(BaseModel):
+    id: int
+    login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
 

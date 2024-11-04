@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema
+from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema
 from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, Role
 
 status_router = APIRouter(prefix="/status")
@@ -18,6 +18,7 @@ def register_account(body: AccountRegisterSchema) -> AccountSchema:
     return AccountSchema(
         id=1,
         login=body.login,
+        password=body.password,
         name=body.name,
         role=Role.USER
     )
@@ -28,6 +29,7 @@ def get_my_account() -> AccountSchema:
     return AccountSchema(
         id=1,
         login="qwerty",
+        password="qwerty",
         name="QWERTY",
         role=Role.USER
     )
@@ -38,6 +40,7 @@ def update_my_account(body: AccountUpdateSchema) -> AccountSchema:
     return AccountSchema(
         id=1,
         login=body.login,
+        password=body.password,
         name=body.name,
         role=Role.USER
     )
@@ -48,3 +51,12 @@ def update_my_account_password(body: AccountPasswordUpdateSchema):
     pass
 
 
+@accounts_router.post('', summary="Создать новый аккаунт", tags=["Аккаунты"])
+def register_account(body: AccountCreateSchema) -> AccountSchema:
+    return AccountSchema(
+        id=body.id,
+        login=body.login,
+        password=body.password,
+        name=body.name,
+        role=Role.USER
+    )
