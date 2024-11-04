@@ -125,7 +125,7 @@ async def files_upload() -> FileSchema:
 
 
 @files_router.get('/{uuid}', summary="Скачать содержимое файла", tags=["Файлы"])
-async def files_upload(uuid: PositiveInt) -> FileSchema:
+async def files_download(uuid: PositiveInt) -> FileSchema:
     pass
 
 
