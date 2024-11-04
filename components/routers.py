@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema, \
-    PictureCreateSchema
+    PictureCreateSchema, PictureSchema
 from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, Role
 
 status_router = APIRouter(prefix="/status", tags=["Статус"])
@@ -21,7 +21,6 @@ def register_account(body: AccountRegisterSchema) -> AccountSchema:
     return AccountSchema(
         id=1,
         login=body.login,
-        password=body.password,
         name=body.name,
         role=Role.USER
     )
@@ -32,7 +31,6 @@ def get_my_account() -> AccountSchema:
     return AccountSchema(
         id=1,
         login="qwerty",
-        password="qwerty",
         name="QWERTY",
         role=Role.USER
     )
@@ -43,7 +41,6 @@ def update_my_account(body: AccountUpdateSchema) -> AccountSchema:
     return AccountSchema(
         id=1,
         login=body.login,
-        password=body.password,
         name=body.name,
         role=Role.USER
     )
@@ -57,11 +54,10 @@ def update_my_account_password(body: AccountPasswordUpdateSchema):
 @accounts_router.post('', summary="Создать новый аккаунт", tags=["Аккаунты"])
 def create_account(body: AccountCreateSchema) -> AccountSchema:
     return AccountSchema(
-        id=body.id,
+        id=1,
         login=body.login,
-        password=body.password,
         name=body.name,
-        role=Role.USER
+        role=body.role
     )
 
 
@@ -72,6 +68,16 @@ def get_all_accounts() -> list[AccountSchema]:
 
 @pictures_router.post("", summary="Создать новую картинку", tags=["Картинки"])
 def create_picture(body: PictureCreateSchema):
+    pass
+
+
+@pictures_router.get("", summary="Получить список всех картинок", tags=["Картинки"])
+def get_all_pictures() -> list[PictureSchema]:
+    pass
+
+
+@pictures_router.get("/my", summary="Получить список своих картинок", tags=["Картинки"])
+def get_my_pictures() -> list[PictureSchema]:
     pass
 
 
