@@ -1,8 +1,21 @@
-from pydantic import BaseModel, StringConstraints
-
-from typing import Annotated
-from typing import Literal
+from annotated_types import Le
+from pydantic import BaseModel, NonNegativeInt, PositiveInt, StringConstraints
+from typing import Annotated, Generic, Literal, TypeVar
 from enum import  StrEnum
+
+
+LoginStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+NameStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+PasswordStr = Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9_-]+$")]
+
+PageNumber = NonNegativeInt
+PageSize = Annotated[PositiveInt, Le(100)]
+ItemT = TypeVar("ItemT")
+
+
+class Page(Generic[ItemT], BaseModel):
+    count: int
+    items: list[ItemT]
 
 
 class StatusResponse(BaseModel):
@@ -27,30 +40,30 @@ class AccountSchema(BaseModel):
 
 
 class AccountRegisterSchema(BaseModel):
-    login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    login: LoginStr
+    password: PasswordStr
+    name: NameStr
 
 
 class MyAccountUpdateSchema(BaseModel):
-    login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    login: LoginStr
+    name: NameStr
 
 
 class AccountUpdateSchema(BaseModel):
-    login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    login: LoginStr
+    name: NameStr
     role: AccountRole
 
 
 class AccountPasswordUpdateSchema(BaseModel):
-    password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
+    password: PasswordStr
 
 
 class AccountCreateSchema(BaseModel):
-    login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    login: LoginStr
+    password: PasswordStr
+    name: NameStr
     role: AccountRole
 
 
