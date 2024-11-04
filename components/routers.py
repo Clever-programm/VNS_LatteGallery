@@ -3,8 +3,10 @@ from fastapi import APIRouter, status
 from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema
 from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, Role
 
-status_router = APIRouter(prefix="/status")
+status_router = APIRouter(prefix="/status", tags=["Статус"])
 accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
+pictures_router = APIRouter(prefix="/pictures", tags=["Картинки"])
+files_router = APIRouter(prefix="/files", tags=["Файлы"])
 USER: AccountSchema
 
 @status_router.get('', summary="Получить статус сервера", tags=["Статус"])
@@ -63,7 +65,7 @@ def create_account(body: AccountCreateSchema) -> AccountSchema:
 
 
 @accounts_router.get('', summary="Получить список всех аккаунтов", tags=["Аккаунты"])
-def get_all_accounts() -> AccountSchema:
+def get_all_accounts() -> list[AccountSchema]:
     pass
 
 
