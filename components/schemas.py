@@ -9,21 +9,21 @@ class StatusResponse(BaseModel):
     status: Literal["ok"]
 
 
-class Role(StrEnum):
+class AccountRole(StrEnum):
     USER = "USER"
     ADMIN = "ADMIN"
     MAIN_ADMIN = "MAIN_ADMIN"
 
 
-class Uuid(StrEnum):
-    UUID = Annotated[str, StringConstraints(min_length=8, pattern=r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")]
+class UUID(StrEnum):
+    UUID = "None"
 
 
 class AccountSchema(BaseModel):
     id: int
     login: str
     name: str
-    role: Role
+    role: AccountRole
 
 
 class AccountRegisterSchema(BaseModel):
@@ -40,7 +40,7 @@ class MyAccountUpdateSchema(BaseModel):
 class AccountUpdateSchema(BaseModel):
     login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    role: Role
+    role: AccountRole
 
 
 class AccountPasswordUpdateSchema(BaseModel):
@@ -51,7 +51,7 @@ class AccountCreateSchema(BaseModel):
     login: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
     password: Annotated[str, StringConstraints(min_length=8, pattern=r"^[a-zA-Z0-9 -] +$")]
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-    role: Role
+    role: AccountRole
 
 
 class PictureSchema(BaseModel):
@@ -61,18 +61,22 @@ class PictureSchema(BaseModel):
     tags: list[str]
     is_private: bool
     owner_id: int
-    file_uuid: Uuid
+    file_uuid: UUID
 
 
 class PictureCreateSchema(BaseModel):
     title: str
     tags: list[str]
     is_private: bool
-    file_uuid: Uuid
+    file_uuid: UUID
 
 
 class PictureUpdateSchema(BaseModel):
     title: str
     tags: list[str]
     is_private: bool
+
+
+class FileSchema(BaseModel):
+    uuid: UUID
 

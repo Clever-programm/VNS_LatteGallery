@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status
 
 from components.schemas import AccountUpdateSchema, AccountPasswordUpdateSchema, AccountCreateSchema, \
-    PictureCreateSchema, PictureSchema
-from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, Role
+    PictureCreateSchema, PictureSchema, FileSchema
+from schemas import StatusResponse, AccountRegisterSchema, AccountSchema, AccountRole
 
 status_router = APIRouter(prefix="/status", tags=["Статус"])
 accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
@@ -22,7 +22,7 @@ def register_account(body: AccountRegisterSchema) -> AccountSchema:
         id=1,
         login=body.login,
         name=body.name,
-        role=Role.USER
+        role=AccountRole.USER
     )
 
 
@@ -32,7 +32,7 @@ def get_my_account() -> AccountSchema:
         id=1,
         login="qwerty",
         name="QWERTY",
-        role=Role.USER
+        role=AccountRole.USER
     )
 
 
@@ -42,7 +42,7 @@ def update_my_account(body: AccountUpdateSchema) -> AccountSchema:
         id=1,
         login=body.login,
         name=body.name,
-        role=Role.USER
+        role=AccountRole.USER
     )
 
 
@@ -78,6 +78,11 @@ def get_all_pictures() -> list[PictureSchema]:
 
 @pictures_router.get("/my", summary="Получить список своих картинок", tags=["Картинки"])
 def get_my_pictures() -> list[PictureSchema]:
+    pass
+
+
+@files_router.post('', summary="Загрузить файл на сервер", tags=["Файлы"])
+def files_upload() -> FileSchema:
     pass
 
 
