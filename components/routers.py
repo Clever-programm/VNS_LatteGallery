@@ -52,7 +52,7 @@ def update_my_account_password(body: AccountPasswordUpdateSchema):
 
 
 @accounts_router.post('', summary="Создать новый аккаунт", tags=["Аккаунты"])
-def register_account(body: AccountCreateSchema) -> AccountSchema:
+def create_account(body: AccountCreateSchema) -> AccountSchema:
     return AccountSchema(
         id=body.id,
         login=body.login,
@@ -60,3 +60,11 @@ def register_account(body: AccountCreateSchema) -> AccountSchema:
         name=body.name,
         role=Role.USER
     )
+
+
+@accounts_router.get('', summary="Получить список всех аккаунтов", tags=["Аккаунты"])
+def get_all_accounts() -> AccountSchema:
+    pass
+
+
+
