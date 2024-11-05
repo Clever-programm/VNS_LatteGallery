@@ -1,4 +1,4 @@
-from setup import create_app
+from latte_gallery.core.setup import create_app
 import uvicorn
 
 app = create_app()
