@@ -17,4 +17,3 @@ ItemT = TypeVar("ItemT")
 class Page(Generic[ItemT], BaseModel):
     count: int
     items: list[ItemT]
-
