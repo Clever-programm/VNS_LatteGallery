@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter
 
 from latte_gallery.core.dependencies import SessionDep
