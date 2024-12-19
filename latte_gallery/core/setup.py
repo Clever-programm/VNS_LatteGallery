@@ -23,7 +23,7 @@ def create_app():
         title="LatteGallery",
         dependencies=[Depends(authenticate_user)],
         lifespan=_app_lifespan,
-        root_path_in_servers=False,
+        root_path="/api"
     )
 
     app.include_router(status_router)

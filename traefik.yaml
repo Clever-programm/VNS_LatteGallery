@@ -3,10 +3,14 @@ api:
   insecure: true
 
 entryPoints:
+  http:
+    address: ":9999"
   web:
     address: ":80"
 
 providers:
+  file:
+    filename: "routes.toml"
   docker:
     exposedByDefault: false
     endpoint: "unix:///var/run/docker.sock"
