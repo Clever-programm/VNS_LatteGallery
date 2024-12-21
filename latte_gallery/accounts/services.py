@@ -3,6 +3,7 @@ import logging
 from fastapi import status
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from passlib.hash import pbkdf2_sha256 as plh
 
 from latte_gallery.accounts.models import Account
 from latte_gallery.accounts.repository import AccountRepository
@@ -31,7 +32,7 @@ class AccountService:
 
     async def authorize(self, login: str, password: str, session: AsyncSession):
         account = await self._repository.find_by_login(login, session)
-        if account is None or account.password != password:
+        if account is None or not plh.verify(password, account.password):
             raise HTTPException(status.HTTP_401_UNAUTHORIZED)
         return account
 
@@ -67,7 +68,7 @@ class AccountService:
         if account is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND)
 
-        account.password = password
+        account.password = plh.hash(password)
 
         await session.commit()
 

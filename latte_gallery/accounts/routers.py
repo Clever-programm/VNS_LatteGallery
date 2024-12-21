@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
 from pydantic import PositiveInt
+from passlib.hash import pbkdf2_sha256 as plh
 
 from latte_gallery.accounts.schemas import (
     AccountCreateSchema,
@@ -30,7 +31,7 @@ async def register_account(
     account = await account_service.create(
         AccountCreateSchema(
             login=body.login,
-            password=body.password,
+            password=plh.hash(body.password),
             name=body.name,
             role=Role.USER,
         ),
@@ -58,6 +59,8 @@ async def create_account(
         current_user.role == Role.ADMIN and body.role in {Role.ADMIN, Role.MAIN_ADMIN}
     ):
         raise HTTPException(status.HTTP_403_FORBIDDEN)
+
+    body.password = plh.hash(body.password)
 
     account = await account_service.create(body, session)
 
