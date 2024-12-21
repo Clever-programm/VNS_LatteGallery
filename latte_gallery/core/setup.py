@@ -24,6 +24,11 @@ def create_app():
         dependencies=[Depends(authenticate_user)],
         lifespan=_app_lifespan,
         root_path_in_servers=False,
+        servers=[
+            {
+                "url": "http://127.0.0.1:80/api"
+            }
+        ]
     )
 
     app.include_router(status_router)
