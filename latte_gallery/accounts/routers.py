@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Response, Request
 from fastapi.params import Depends
 from pydantic import PositiveInt
 from passlib.hash import pbkdf2_sha256 as plh
 from datetime import timedelta
+from typing import Union
 
 from latte_gallery.accounts.schemas import (
     AccountCreateSchema,
@@ -14,7 +15,8 @@ from latte_gallery.accounts.schemas import (
 )
 from latte_gallery.core.dependencies import AccountServiceDep, SessionDep
 from latte_gallery.core.schemas import Page, PageNumber, PageSize, Token
-from latte_gallery.security.dependencies import AuthenticatedAccount, AuthorizedAccount, create_access_token
+from latte_gallery.security.dependencies import (AuthenticatedAccount, AuthorizedAccount,
+                                                 create_access_token, authenticate_by_token)
 from latte_gallery.security.permissions import Anonymous, Authenticated, IsAdmin
 
 accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
@@ -26,12 +28,26 @@ accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(AuthorizedAccount(Authenticated()))],
 )
-async def login_for_access_token(account: AuthenticatedAccount) -> Token:
+async def login_for_access_token(account: AuthenticatedAccount, response: Response) -> Token:
     access_token_expires = timedelta(minutes=30)
     access_token = create_access_token(
-        data={"sub": account.name}, expires_delta=access_token_expires
+        data={"sub": account.name, "pas":account.password}, expires_delta=access_token_expires
     )
+    response.set_cookie(key="jwt-token", value=access_token)
     return Token(access_token=access_token, token_type="bearer")
+
+
+@accounts_router.get(
+"/authenticate",
+    summary="Аутентификация по куки",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def authenticate_by_cookie(request: Request, account_service: AccountServiceDep, session: SessionDep):
+    cookie_token = request.cookies.get('jwt-token')
+    account = await authenticate_by_token(cookie_token, account_service, session)
+    if not account:
+        raise HTTPException(404)
+    return account
 
 
 @accounts_router.post(
