@@ -1,3 +1,4 @@
+import os
 import jwt
 from datetime import datetime, timezone, timedelta
 from typing import Annotated
@@ -14,6 +15,7 @@ from latte_gallery.security.permissions import BasePermission
 
 SecuritySchema = HTTPBasic(auto_error=False)
 load_dotenv()
+TOKEN_SECRET = os.getenv('TOKEN_SECRET')
 
 
 async def authenticate_user(
