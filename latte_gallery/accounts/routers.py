@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
 from pydantic import PositiveInt
 from passlib.hash import pbkdf2_sha256 as plh
+from datetime import timedelta
 
 from latte_gallery.accounts.schemas import (
     AccountCreateSchema,
@@ -12,11 +13,25 @@ from latte_gallery.accounts.schemas import (
     Role,
 )
 from latte_gallery.core.dependencies import AccountServiceDep, SessionDep
-from latte_gallery.core.schemas import Page, PageNumber, PageSize
-from latte_gallery.security.dependencies import AuthenticatedAccount, AuthorizedAccount
+from latte_gallery.core.schemas import Page, PageNumber, PageSize, Token
+from latte_gallery.security.dependencies import AuthenticatedAccount, AuthorizedAccount, create_access_token
 from latte_gallery.security.permissions import Anonymous, Authenticated, IsAdmin
 
 accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
+
+
+@accounts_router.post(
+"/token",
+    summary="Создать токен",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(AuthorizedAccount(Authenticated()))],
+)
+async def login_for_access_token(account: AuthenticatedAccount) -> Token:
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": account.name}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
 
 
 @accounts_router.post(

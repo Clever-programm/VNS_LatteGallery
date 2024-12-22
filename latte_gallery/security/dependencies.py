@@ -1,4 +1,8 @@
+import jwt
+import datetime
+from datetime import timezone, timedelta
 from typing import Annotated
+from dotenv import load_dotenv
 
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
@@ -8,7 +12,9 @@ from latte_gallery.accounts.models import Account
 from latte_gallery.core.dependencies import AccountServiceDep, SessionDep
 from latte_gallery.security.permissions import BasePermission
 
+
 SecuritySchema = HTTPBasic(auto_error=False)
+load_dotenv()
 
 
 async def authenticate_user(
@@ -22,6 +28,17 @@ async def authenticate_user(
     return await account_service.authorize(
         credentials.username, credentials.password, session
     )
+
+
+async def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, TOKEN_SECRET, algorithm="HS256")
+    return encoded_jwt
 
 
 AuthenticatedAccount = Annotated[Account | None, Depends(authenticate_user)]
