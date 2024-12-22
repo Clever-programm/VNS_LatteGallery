@@ -27,7 +27,7 @@ async def authenticate_user(
         return None
 
     return await account_service.authorize(
-        credentials.username, credentials.password, session
+        credentials.username, credentials.password, False, session
     )
 
 
@@ -38,11 +38,13 @@ async def authenticate_by_token(
 ):
     if token is None:
         return None
-    user_data = jwt.decode(token, TOKEN_SECRET, algorithms=["HS256"])
+    user_data = jwt.decode(token, str(TOKEN_SECRET), algorithms=["HS256"])
 
     return await account_service.authorize(
-        user_data['sub'], user_data['pas'], session
+        user_data['sub'], user_data['pas'], True, session
     )
+
+    # return user_data
 
 
 async def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -52,7 +54,7 @@ async def create_access_token(data: dict, expires_delta: timedelta | None = None
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, TOKEN_SECRET, algorithm="HS256")
+    encoded_jwt = jwt.encode(to_encode, str(TOKEN_SECRET), algorithm="HS256")
     return encoded_jwt
 
 
