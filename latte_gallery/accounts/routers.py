@@ -30,7 +30,7 @@ accounts_router = APIRouter(prefix="/accounts", tags=["Аккаунты"])
 )
 async def login_for_access_token(account: AuthenticatedAccount, response: Response) -> Token:
     access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
+    access_token = await create_access_token(
         data={"sub": account.name, "pas":account.password}, expires_delta=access_token_expires
     )
     response.set_cookie(key="jwt-token", value=access_token)
