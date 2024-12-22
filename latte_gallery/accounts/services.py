@@ -30,11 +30,11 @@ class AccountService:
 
         return account
 
-    async def authorize(self, login: str, password: str, hashed: bool, session: AsyncSession):
+    async def authorize(self, login: str, password: str, session: AsyncSession):
         account = await self._repository.find_by_login(login, session)
         if account is None:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED)
-        elif not (hashed or plh.verify(password, account.password)) or password != account.password:
+        elif not (plh.verify(password, account.password) or password == account.password):
             raise HTTPException(status.HTTP_418_IM_A_TEAPOT)
         return account
 

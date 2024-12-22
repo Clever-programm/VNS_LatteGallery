@@ -27,7 +27,7 @@ async def authenticate_user(
         return None
 
     return await account_service.authorize(
-        credentials.username, credentials.password, False, session
+        credentials.username, credentials.password, session
     )
 
 
@@ -41,7 +41,7 @@ async def authenticate_by_token(
     user_data = jwt.decode(token, str(TOKEN_SECRET), algorithms=["HS256"])
 
     return await account_service.authorize(
-        user_data['sub'], user_data['pas'], True, session
+        user_data['sub'], user_data['pas'], session
     )
 
     # return user_data
