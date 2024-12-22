@@ -3,7 +3,6 @@ from fastapi.params import Depends
 from pydantic import PositiveInt
 from passlib.hash import pbkdf2_sha256 as plh
 from datetime import timedelta
-from typing import Union
 
 from latte_gallery.accounts.schemas import (
     AccountCreateSchema,
